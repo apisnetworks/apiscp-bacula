@@ -1,0 +1,19 @@
+---
+- name: Restart Bacula Director
+  systemd:
+    name: bacula-dir
+    state: restarted
+    enabled: yes
+  listen: Restart bacula storage
+- name: Restart Bacula Storage Daemon
+  systemd:
+    name: bacula-sd
+    state: restarted
+    enabled: yes
+  listen: Restart bacula storage
+- name: Restart Bacula File Daemon
+  systemd:
+    name: bacula-fd
+    state: restarted
+    enabled: yes
+  listen: Restart bacula-fd

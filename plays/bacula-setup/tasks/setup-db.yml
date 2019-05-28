@@ -1,0 +1,67 @@
+---
+- set_fact:
+    db_bin: "{{ (bacula_driver == 'mysql') | ternary('mysql', 'psql') }}"
+  when: bacula_driver in ['mysql','postgresql']
+- set_fact:
+    db_check_query: >
+      SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '{{ bacula_credentials.db_name | regex_replace("'", "\\'") }}'
+  when: bacula_driver == 'mysql'
+- set_fact:
+    db_check_query: >
+      SELECT datname FROM pg_catalog.pg_database WHERE lower(datname) = lower('{{ bacula_credentials.db_name | regex_replace("'", "\\'") }}');
+  when: bacula_driver == 'postgresql'
+- name: Verify database exists
+  shell: >-
+      echo {{ db_check_query | quote }} | {{ db_bin }} {{ (bacula_driver == 'mysql') | ternary('mysql','template1') }}
+  register: r
+  changed_when: false
+
+- name: Create Bacula database {{ bacula_dbname }} mysql
+  mysql_db:
+    name: "{{ bacula_credentials.db_name }}"
+  when:
+    - r.stdout.find(bacula_credentials.db_name) == -1
+    - bacula_driver == 'mysql'
+- name: Create Bacula database {{ bacula_dbname }} non-mysql
+  command: "/usr/libexec/bacula/create_{{ bacula_driver }}_database"
+  environment:
+    db_name: "{{ bacula_credentials.db_name }}"
+  when:
+    - r.stdout.find(bacula_credentials.db_name) == -1
+    - bacula_driver != 'mysql'
+
+- name: Create MySQL user
+  mysql_user:
+    user: "{{ bacula_credentials.db_user }}"
+    password: "{{ bacula_credentials.db_password }}"
+    host: "{{ bacula_credentials.db_hostname}}"
+    priv: "{{ bacula_credentials.db_name }}.*:ALL"
+  when: bacula_driver == 'mysql'
+- name: Create PostgreSQL user
+  postgresql_user:
+    name: "{{ bacula_credentials.db_user }}"
+    password: "{{ bacula_credentials.db_password }}"
+    priv: "ALL"
+    db: "{{ bacula_credentials.db_name }}"
+  become: yes
+  become_user: postgres
+  when: bacula_driver == 'postgresql'
+
+- name: Populate schema
+  command: "/usr/libexec/bacula/make_bacula_tables {{ bacula_driver }}"
+  environment:
+    db_name: "{{ bacula_credentials.db_name }}"
+  when:
+    - r.stdout.find(bacula_credentials.db_name) == -1
+  notify:
+    - Restart bacula storage
+- name: Update schema tables
+  command: "/usr/libexec/bacula/update_bacula_tables {{ bacula_driver }}"
+  environment:
+    db_name: "{{ bacula_credentials.db_name }}"
+  register: r
+  failed_when:
+    - r.rc != 0
+    - r.stdout.find("existing database is version") == -1
+  changed_when:
+    - r.rc == 0

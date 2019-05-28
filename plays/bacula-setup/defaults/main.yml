@@ -1,0 +1,21 @@
+---
+bacula_dir: /etc/bacula
+bacula_custom_config: /etc/sysconfig/bacula-vars
+bacula_user: bacula
+bacula_group: bacula
+# libbaccats linkage
+bacula_driver: "{{ lookup('pipe', 'grep DB_DRIVER ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default('mysql') }}"
+
+bacula_credentials:
+  # Database credentials
+  # Keep this localhost
+  db_hostname: "{{ lookup('pipe', 'grep DB_HOSTNAME ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default('localhost', true) | trim }}"
+  db_name: "{{ lookup('pipe', 'grep DB_NAME ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default('bacula', true) | trim }}"
+  db_user: "{{ lookup('pipe', 'grep DB_USER ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default('bacula', true) | trim }}"
+  db_password: "{{ lookup('pipe', 'grep DB_PASSWORD ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default(lookup('password', '/dev/null chars=ascii_letters length=24'), true) | trim }}"
+  # storage daemon
+  sd_hostname: "{{ lookup('pipe', 'grep SD_HOSTNAME ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default('localhost', true) | trim }}"
+  sd_password: "{{ lookup('pipe', 'grep SD_PASSWORD ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default(lookup('password', '/dev/null chars=ascii_letters length=24'), true) | trim }}"
+  monitor_password: "{{ lookup('pipe', 'grep MONITOR_PASSWORD ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default(lookup('password', '/dev/null chars=ascii_letters length=24'), true) | trim }}"
+  dir_password: "{{ lookup('pipe', 'grep DIR_PASSWORD ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default(lookup('password', '/dev/null chars=ascii_letters length=24'), true) | trim }}"
+  console_password: "{{ lookup('pipe', 'grep CONSOLE_PASSWORD ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default(lookup('password', '/dev/null chars=ascii_letters length=24'), true) | trim }}"

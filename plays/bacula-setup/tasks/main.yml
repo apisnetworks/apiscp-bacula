@@ -1,0 +1,32 @@
+# Addin play
+# vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
+# Configure Bacula
+---
+- name: Verify {{ bacula_custom_config }} exists
+  stat: path="{{ bacula_custom_config }}"
+  register: st
+- name: Touch {{ bacula_custom_config }}
+  file: path="{{ bacula_custom_config }}" state=touch
+  when: not st.stat.exists
+- name: Populate Bacula runtime variables
+  ini_file:
+    path: "{{ bacula_custom_config }}"
+    owner: "{{ bacula_user }}"
+    group: "{{ bacula_group }}"
+    mode: 0600
+    no_extra_spaces: yes
+    section: null
+    option: "{{ item.key | upper }}"
+    value: "{{ item.value }}"
+  with_dict: "{{ bacula_credentials }}"
+- name: Verify libbaccats.so links to {{ bacula_driver }}
+  stat: path="/usr/lib64/libbaccats.so"
+  register: r
+- name: Link libbaccats.so to {{ bacula-driver }}
+  command: alternatives --set libbaccats.so /usr/lib64/libbaccats-"{{ bacula_driver }}".so
+  when: not r.stat.exists or not r.stat.islnk or -1 == r.stat.lnk_source.find(bacula_driver)
+- assert:
+    that: bacula_driver in ['mysql','postgresql']
+    fail_msg: "Unknown driver {{ bacula_driver }}"
+- name: Configure Bacula database
+  include_tasks: setup-db.yml
