@@ -1,0 +1,6 @@
+Client {
+	Name = {{ name }}
+	Password = "{{ __password | quote }}"
+	Address = "{{ address }}"
+	FileSet = "{{ fileset | default('Server') }}"
+}

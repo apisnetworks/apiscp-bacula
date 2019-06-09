@@ -2,6 +2,45 @@
 # vim:et ts=2 sw=2 sts=2 syntax=yaml filetype=yaml
 # Configure Bacula
 ---
+- assert:
+    that: bacula_driver in ['mysql','postgresql']
+    fail_msg: "Unknown driver {{ bacula_driver }}"
+- name: Create storage slots paths
+  file:
+    path: "{{ bacula_storage_path }}/{{ item }}"
+    owner: "{{ bacula_user }}"
+    group: "{{ bacula_group }}"
+    state: directory
+    mode: 0700
+    recurse: yes
+  loop: "{{ range(1, bacula_slot_count+1) | list }}"
+  notify:
+    - Restart Bacula Storage Daemon
+- name: Create configuration slots
+  file:
+    path: "{{ bacula_dir }}/conf.d/servers/{{ item }}"
+    owner: "{{ bacula_user }}"
+    group: "{{ bacula_group }}"
+    state: directory
+    mode: 0700
+    recurse: yes
+  loop: "{{ range(1, bacula_slot_count+1) | list }}"
+  notify:
+    - Restart Bacula Storage Daemon
+- name: Add bacula alias to root
+  include_role: name=mail/configure-postfix tasks_from=manage-alias.yml
+  vars:
+    email: bacula
+    destination: "{{ bacula_notification_email }}"
+- name: Configure self
+  include_tasks: setup-client.yml
+  vars:
+    name: self
+    password: "{{ lookup('password', '/dev/null chars=ascii_letters length=24') }}"
+    address: 127.0.0.1
+    slot: 1
+- name: Start Bacula-client
+  systemd: name=bacula-fd state=started enabled=yes
 - name: Verify {{ bacula_custom_config }} exists
   stat: path="{{ bacula_custom_config }}"
   register: st
@@ -19,14 +58,13 @@
     option: "{{ item.key | upper }}"
     value: "{{ item.value }}"
   with_dict: "{{ bacula_credentials }}"
+  loop_control:
+    label: "Setting {{ item.key | upper }}"
 - name: Verify libbaccats.so links to {{ bacula_driver }}
   stat: path="/usr/lib64/libbaccats.so"
   register: r
 - name: Link libbaccats.so to {{ bacula-driver }}
   command: alternatives --set libbaccats.so /usr/lib64/libbaccats-"{{ bacula_driver }}".so
   when: not r.stat.exists or not r.stat.islnk or -1 == r.stat.lnk_source.find(bacula_driver)
-- assert:
-    that: bacula_driver in ['mysql','postgresql']
-    fail_msg: "Unknown driver {{ bacula_driver }}"
 - name: Configure Bacula database
   include_tasks: setup-db.yml

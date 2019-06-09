@@ -14,6 +14,7 @@ set +o allexport
 
 
 env_fill "$DIR/director.conf"
+env_fill "$DIR/storage.conf"
 
 EXTRA="${EXTRA:-}"
 TEMPLATE=$(grep -v '^[[:space:]]*#' "$CNFDIR/base.conf")
@@ -26,12 +27,13 @@ find "$CNFDIR" -mindepth 1 -type d | while read -r n ; do
 		for f in "$n"/* ; do
 				awk -v N="$SLOT" -v EXTRA="$EXTRA" -v TEMPLATE="$TEMPLATE" \
 						'BEGIN {
-								PASSWORD=""; DOMAIN=""; FILESET="Client" ; gsub(/%N%/,N,TEMPLATE);
+								PASSWORD=""; DOMAIN=""; ADDRESS=""; FILESET="Client" ; gsub(/%N%/,N,TEMPLATE);
 						}
 						{
 								if ($0 ~ /^[[:space:]]*#/) { exit; }
 								else if ($0 ~ /Password/) { gsub(/%PASSWORD%/,$3,TEMPLATE); }
-								else if ($0 ~/Name/) { gsub(/%NAME%/,$3,TEMPLATE); }
+								else if ($0 ~ /Name/) { gsub(/%NAME%/,$3,TEMPLATE); }
+								else if ($0 ~ /Address/) { gsub(/%ADDRESS%/, $3, TEMPLATE); }
 								else if ($0 ~ /FileSet/) { gsub(/%FILESET%/, $3, TEMPLATE); }
 						} ;
 						END {

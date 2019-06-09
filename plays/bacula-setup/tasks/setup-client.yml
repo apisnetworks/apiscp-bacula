@@ -1,0 +1,31 @@
+---
+- set_fact:
+    __password: "{{ password }}"
+- name: Template configuration
+  template:
+    src: "{{ bacula_client_template }}"
+    dest: "{{ bacula_dir }}/conf.d/servers/{{ slot | default('1') }}/{{ name }}.conf"
+    force: "{{ force | default('no') }}"
+  register: templatechk
+  notify:
+    - Restart Bacula Director
+- name: Update bacula-fd.conf
+  replace:
+    path: "{{ bacula_dir }}/bacula-fd.conf"
+    regexp: '{{ item.regexp }}'
+    replace: '{{ item.line }}'
+    mode: 0600
+    owner: "{{ bacula_user }}"
+    group: "{{ bacula_group }}"
+  loop_control:
+    label: "Updating {{ item.regexp }}"
+  with_items:
+    - regexp: '\W@@FD_PASSWORD@@\W'
+      line: '"{{ __password | quote}}"'
+    - regexp: '\W@@MON_FD_PASSWORD@@\W'
+      line: '"{{ lookup("password", "/dev/null /dev/null chars=ascii_letters,digits length=48") }}"'
+  when:
+    - templatechk.changed
+    - name == "self"
+  notify:
+    - Restart Bacula File Daemon

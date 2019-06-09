@@ -1,1 +1,3 @@
-conf/bacula/conf.d/servers/*/*
+conf/bacula-fd.conf
+conf/bacula-fd.conf.rpmsave
+conf/conf.d/servers/*/*
