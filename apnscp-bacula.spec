@@ -34,11 +34,23 @@ mkdir -p $RPM_BUILD_ROOT/etc/bacula $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig
 touch $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/bacula-vars
 cp -dpR conf/*  $RPM_BUILD_ROOT/etc/bacula/
 rm -f $RPM_BUILD_ROOT/etc/bacula/bacula-fd.conf{,.*}
+rm -f $RPM_BUILD_ROOT/etc/bacula/conf.d/servers/1/*.conf
 mkdir -p $RPM_BUILD_ROOT/%{apnscp_root}/addins/%{name}
 cp -dpR plays/* $RPM_BUILD_ROOT/%{apnscp_root}/addins/
 
 %post
+for f in bconsole.conf bacula-sd.conf bacula-dir.conf ; do
+  OLDCONFIG=/etc/bacula/$f
+  [[ -f "$OLDCONFIG" ]] && mv "$OLDCONFIG" "$OLDCONFIG.apnscp-save"
+done
 %run_apnscp_addin bacula-setup
+
+%postun
+[[ $1 -eq 0 ]] || exit 0
+for f in bconsole.conf bacula-sd.conf bacula-dir.conf ; do
+  OLDCONFIG=/etc/bacula/$f
+  [[ -f "$OLDCONFIG.apnscp-save" ]] && mv "$OLDCONFIG.apnscp-save" "$OLDCONFIG"
+done
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -50,10 +62,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600, bacula, bacula) %config(noreplace) %{_sysconfdir}/sysconfig/bacula-vars
 %attr(0700, bacula, bacula) %dir %{_sysconfdir}/bacula/conf.d/
 
-%config /etc/bacula/bacula-dir.conf
-%config /etc/bacula/bacula-sd.conf
-%config /etc/bacula/bconsole.conf
-%config /etc/bacula/query.sql
+%config /etc/bacula/bacula-dir-apnscp.conf
+%config /etc/bacula/bacula-sd-apnscp.conf
+%config /etc/bacula/bconsole-apnscp.conf
+%config /etc/bacula/query-apnscp.sql
 
 %dir %{apnscp_root}/addins/bacula-setup
 %{apnscp_root}/addins/bacula-setup/defaults/main.yml
@@ -81,7 +93,7 @@ rm -rf $RPM_BUILD_ROOT
 /etc/bacula/conf.d/sd-director.conf
 /etc/bacula/conf.d/servers/base.conf
 /etc/bacula/conf.d/servers/slot-base.conf
-/etc/bacula/conf.d/storage.conf
+/etc/bacula/conf.d/servers/storage.conf
 %attr(0755, -, -) /etc/bacula/helpers.sh
 %attr(0755, -, -) /etc/bacula/conf.d/bacula-dir.sh
 %attr(0755, -, -) /etc/bacula/conf.d/bacula-sd.sh

@@ -16,4 +16,4 @@
     name: bacula-fd
     state: restarted
     enabled: yes
-  listen: Restart bacula-fd
+  listen: Restart bacula storage

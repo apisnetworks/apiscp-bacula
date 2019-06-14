@@ -8,7 +8,7 @@ bacula_user: bacula
 bacula_group: bacula
 bacula_storage_path: /home/bacula
 # libbaccats linkage
-bacula_driver: "{{ lookup('pipe', 'grep DB_DRIVER ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default('mysql') }}"
+bacula_driver: "{{ lookup('pipe', 'grep DB_DRIVER ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default('mysql', true) }}"
 bacula_client_template: templates/client-template.conf.j2
 bacula_credentials:
   # Database credentials

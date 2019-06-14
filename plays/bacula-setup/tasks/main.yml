@@ -16,6 +16,7 @@
   loop: "{{ range(1, bacula_slot_count+1) | list }}"
   notify:
     - Restart Bacula Storage Daemon
+    - Restart Bacula Director
 - name: Create configuration slots
   file:
     path: "{{ bacula_dir }}/conf.d/servers/{{ item }}"
@@ -26,7 +27,22 @@
     recurse: yes
   loop: "{{ range(1, bacula_slot_count+1) | list }}"
   notify:
-    - Restart Bacula Storage Daemon
+    - Restart bacula storage
+- name: Symlink {{ src }} to {{ dest }}
+  file:
+    src: "{{ bacula_dir }}/{{ item }}-apnscp.conf"
+    dest: "{{ bacula_dir }}/{{ item }}.conf"
+    state: link
+    force: yes
+    owner: "{{ bacula_user }}"
+    group: "{{ bacula_group }}"
+    mode: 0600
+  with_items:
+    - bacula-dir
+    - bacula-sd
+    - bconsole
+  notify:
+    - Restart bacula storage
 - name: Add bacula alias to root
   include_role: name=mail/configure-postfix tasks_from=manage-alias.yml
   vars:

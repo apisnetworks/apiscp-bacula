@@ -12,9 +12,7 @@ set +o allexport
 
 . "$(dirname "$0")/../helpers.sh"
 
-
 env_fill "$DIR/director.conf"
-env_fill "$DIR/storage.conf"
 
 EXTRA="${EXTRA:-}"
 TEMPLATE=$(grep -v '^[[:space:]]*#' "$CNFDIR/base.conf")
@@ -23,7 +21,7 @@ env_fill "$(dirname "$0")/database.conf"
 
 find "$CNFDIR" -mindepth 1 -type d | while read -r n ; do
 		SLOT=$(basename "$n")
-		perl -n -pe 's!%N%!'"$SLOT"'!g;' "$CNFDIR/slot-base.conf" | env_fill -
+		perl -n -pe 's!%N%!'"$SLOT"'!g;' "$CNFDIR/slot-base.conf" "$CNFDIR/storage.conf" | env_fill -
 		for f in "$n"/* ; do
 				awk -v N="$SLOT" -v EXTRA="$EXTRA" -v TEMPLATE="$TEMPLATE" \
 						'BEGIN {
