@@ -13,7 +13,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: bacula-director
 Requires: bacula-storage
 Requires: bacula-client
-Requires(pre): /etc/rpm/macros.apnscp
 BuildArch: noarch
 
 %description
@@ -92,5 +91,5 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Fri Jun 07 2019 Matt Saladna <matt@apisnetworks.com> - 1.0-1.apnscp
-- Initial release
+#* Thu Jun 13 2019 Matt Saladna <matt@apisnetworks.com> - 1.0-1.apnscp
+#- Initial release
