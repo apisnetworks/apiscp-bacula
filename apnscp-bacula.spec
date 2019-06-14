@@ -35,8 +35,8 @@ touch $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/bacula-vars
 cp -dpR conf/*  $RPM_BUILD_ROOT/etc/bacula/
 rm -f $RPM_BUILD_ROOT/etc/bacula/bacula-fd.conf{,.*}
 rm -f $RPM_BUILD_ROOT/etc/bacula/conf.d/servers/1/*.conf
-mkdir -p $RPM_BUILD_ROOT/%{apnscp_root}/addins/%{name}
-cp -dpR plays/* $RPM_BUILD_ROOT/%{apnscp_root}/addins/
+mkdir -p $RPM_BUILD_ROOT/%{apnscp_root}/resources/playbooks/addins/%{name}
+cp -dpR plays/* $RPM_BUILD_ROOT/%{apnscp_root}/resources/playbooks/addins/
 
 %post
 for f in bconsole.conf bacula-sd.conf bacula-dir.conf ; do
@@ -67,13 +67,13 @@ rm -rf $RPM_BUILD_ROOT
 %config /etc/bacula/bconsole-apnscp.conf
 %config /etc/bacula/query-apnscp.sql
 
-%dir %{apnscp_root}/addins/bacula-setup
-%{apnscp_root}/addins/bacula-setup/defaults/main.yml
-%{apnscp_root}/addins/bacula-setup/handlers/main.yml
-%{apnscp_root}/addins/bacula-setup/tasks/main.yml
-%{apnscp_root}/addins/bacula-setup/tasks/setup-db.yml
-%{apnscp_root}/addins/bacula-setup/tasks/setup-client.yml
-%{apnscp_root}/addins/bacula-setup/templates/client-template.conf.j2
+%dir %{apnscp_root}/resources/playbooks/addins/bacula-setup
+%{apnscp_root}/resources/playbooks/addins/bacula-setup/defaults/main.yml
+%{apnscp_root}/resources/playbooks/addins/bacula-setup/handlers/main.yml
+%{apnscp_root}/resources/playbooks/addins/bacula-setup/tasks/main.yml
+%{apnscp_root}/resources/playbooks/addins/bacula-setup/tasks/setup-db.yml
+%{apnscp_root}/resources/playbooks/addins/bacula-setup/tasks/setup-client.yml
+%{apnscp_root}/resources/playbooks/addins/bacula-setup/templates/client-template.conf.j2
 
 %config(noreplace) %dir %{_sysconfdir}/bacula/local.d
 %config(noreplace) /etc/bacula/local.d/bacula-dir-custom.conf
