@@ -19,7 +19,7 @@
     - Restart Bacula Director
 - name: Create configuration slots
   file:
-    path: "{{ bacula_dir }}/conf.d/servers/{{ item }}"
+    path: "{{ bacula_server_slot_base }}/{{ item }}"
     owner: "{{ bacula_user }}"
     group: "{{ bacula_group }}"
     state: directory

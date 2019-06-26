@@ -3,7 +3,7 @@ set -euo pipefail
 shopt -s nullglob
 
 DIR=$(dirname "$0")
-CNFDIR="$DIR/servers"
+CNFDIR="/etc/bacula/local.d/servers"
 [[ -f /etc/bacula/local.d/extra.sh ]] && . /etc/bacula/local.d/extra.sh dir
 
 set -o allexport
@@ -15,17 +15,17 @@ set +o allexport
 env_fill "$DIR/director.conf"
 
 EXTRA="${EXTRA:-}"
-TEMPLATE=$(grep -v '^[[:space:]]*#' "$CNFDIR/base.conf")
+TEMPLATE=$(grep -v '^[[:space:]]*#' "$(flexible_check servers/base.conf)")
 
-env_fill "$(dirname "$0")/database.conf"
+env_fill "${DIR}/database.conf"
 
 find "$CNFDIR" -mindepth 1 -type d | while read -r n ; do
 		SLOT=$(basename "$n")
-		perl -n -pe 's!%N%!'"$SLOT"'!g;' "$CNFDIR/slot-base.conf" "$CNFDIR/storage.conf" | env_fill -
-		for f in "$n"/* ; do
+		perl -n -pe 's!%N%!'"$SLOT"'!g;' "$(flexible_check servers/slot-base.conf)" "$(flexible_check servers/storage.conf)" | env_fill -
+		for f in "$n"/*.conf ; do
 				awk -v N="$SLOT" -v EXTRA="$EXTRA" -v TEMPLATE="$TEMPLATE" \
 						'BEGIN {
-								PASSWORD=""; DOMAIN=""; ADDRESS=""; FILESET="Client" ; gsub(/%N%/,N,TEMPLATE);
+								PASSWORD=""; DOMAIN=""; ADDRESS=""; FILESET="Client-Layer" ; gsub(/%N%/,N,TEMPLATE);
 						}
 						{
 								if ($0 ~ /^[[:space:]]*#/) { exit; }

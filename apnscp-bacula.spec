@@ -30,17 +30,17 @@ cd %{name}-%{version}
 %install
 cd %{name}-%{version}
 rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/etc/bacula $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/bacula $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig
 touch $RPM_BUILD_ROOT/%{_sysconfdir}/sysconfig/bacula-vars
-cp -dpR conf/*  $RPM_BUILD_ROOT/etc/bacula/
-rm -f $RPM_BUILD_ROOT/etc/bacula/bacula-fd.conf{,.*}
-rm -f $RPM_BUILD_ROOT/etc/bacula/conf.d/servers/1/*.conf
+cp -dpR conf/*  $RPM_BUILD_ROOT%{_sysconfdir}/bacula/
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/bacula/bacula-fd.conf{,.*}
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/bacula/conf.d/servers/1/*.conf
 mkdir -p $RPM_BUILD_ROOT/%{apnscp_root}/resources/playbooks/addins/%{name}
 cp -dpR plays/* $RPM_BUILD_ROOT/%{apnscp_root}/resources/playbooks/addins/
 
 %post
 for f in bconsole.conf bacula-sd.conf bacula-dir.conf ; do
-  OLDCONFIG=/etc/bacula/$f
+  OLDCONFIG=%{_sysconfdir}/bacula/$f
   [[ -f "$OLDCONFIG" ]] && mv "$OLDCONFIG" "$OLDCONFIG.apnscp-save"
 done
 %run_apnscp_addin bacula-setup
@@ -48,7 +48,7 @@ done
 %postun
 [[ $1 -eq 0 ]] || exit 0
 for f in bconsole.conf bacula-sd.conf bacula-dir.conf ; do
-  OLDCONFIG=/etc/bacula/$f
+  OLDCONFIG=%{_sysconfdir}/bacula/$f
   [[ -f "$OLDCONFIG.apnscp-save" ]] && mv "$OLDCONFIG.apnscp-save" "$OLDCONFIG"
 done
 
@@ -62,10 +62,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0600, bacula, bacula) %config(noreplace) %{_sysconfdir}/sysconfig/bacula-vars
 %attr(0700, bacula, bacula) %dir %{_sysconfdir}/bacula/conf.d/
 
-%config /etc/bacula/bacula-dir-apnscp.conf
-%config /etc/bacula/bacula-sd-apnscp.conf
-%config /etc/bacula/bconsole-apnscp.conf
-%config /etc/bacula/query-apnscp.sql
+%config %{_sysconfdir}/bacula/bacula-dir-apnscp.conf
+%config %{_sysconfdir}/bacula/bacula-sd-apnscp.conf
+%config %{_sysconfdir}/bacula/bconsole-apnscp.conf
+%config %{_sysconfdir}/bacula/query-apnscp.sql
 
 %dir %{apnscp_root}/resources/playbooks/addins/bacula-setup
 %{apnscp_root}/resources/playbooks/addins/bacula-setup/defaults/main.yml
@@ -76,29 +76,29 @@ rm -rf $RPM_BUILD_ROOT
 %{apnscp_root}/resources/playbooks/addins/bacula-setup/templates/client-template.conf.j2
 
 %config(noreplace) %dir %{_sysconfdir}/bacula/local.d
-%config(noreplace) /etc/bacula/local.d/bacula-dir-custom.conf
-%config(noreplace) /etc/bacula/local.d/bacula-sd-custom.conf
-%config(noreplace) /etc/bacula/local.d/bconsole-custom.conf
-%attr(0755, -, -) %config(noreplace) /etc/bacula/local.d/extra.sh
+%config(noreplace) %{_sysconfdir}/bacula/local.d/bacula-dir-custom.conf
+%config(noreplace) %{_sysconfdir}/bacula/local.d/bacula-sd-custom.conf
+%config(noreplace) %{_sysconfdir}/bacula/local.d/bconsole-custom.conf
+%attr(0755, -, -) %config(noreplace) %{_sysconfdir}/bacula/local.d/extra.sh
 
-%config(noreplace) %dir %{_sysconfdir}/bacula/conf.d/servers/
-/etc/bacula/conf.d/bconsole.conf
-/etc/bacula/conf.d/console.conf
-/etc/bacula/conf.d/database.conf
-/etc/bacula/conf.d/director.conf
-/etc/bacula/conf.d/fileset.conf
-/etc/bacula/conf.d/job.conf
-/etc/bacula/conf.d/pool.conf
-/etc/bacula/conf.d/schedule.conf
-/etc/bacula/conf.d/sd-director.conf
-/etc/bacula/conf.d/servers/base.conf
-/etc/bacula/conf.d/servers/slot-base.conf
-/etc/bacula/conf.d/servers/storage.conf
-%attr(0755, -, -) /etc/bacula/helpers.sh
-%attr(0755, -, -) /etc/bacula/conf.d/bacula-dir.sh
-%attr(0755, -, -) /etc/bacula/conf.d/bacula-sd.sh
-%attr(0755, -, -) /etc/bacula/conf.d/bconsole.sh
-%attr(0755, -, -) /etc/bacula/conf.d/template.sh
+%{_sysconfdir}/bacula/conf.d/bconsole.conf
+%{_sysconfdir}/bacula/conf.d/console.conf
+%{_sysconfdir}/bacula/conf.d/database.conf
+%{_sysconfdir}/bacula/conf.d/director.conf
+%{_sysconfdir}/bacula/conf.d/fileset.conf
+%{_sysconfdir}/bacula/conf.d/job.conf
+%{_sysconfdir}/bacula/conf.d/pool.conf
+%{_sysconfdir}/bacula/conf.d/schedule.conf
+%{_sysconfdir}/bacula/conf.d/sd-director.conf
+%dir %{_sysconfdir}/bacula/conf.d/servers/
+%{_sysconfdir}/bacula/conf.d/servers/base.conf
+%{_sysconfdir}/bacula/conf.d/servers/slot-base.conf
+%{_sysconfdir}/bacula/conf.d/servers/storage.conf
+%attr(0755, -, -) %{_sysconfdir}/bacula/helpers.sh
+%attr(0755, -, -) %{_sysconfdir}/bacula/conf.d/bacula-dir.sh
+%attr(0755, -, -) %{_sysconfdir}/bacula/conf.d/bacula-sd.sh
+%attr(0755, -, -) %{_sysconfdir}/bacula/conf.d/bconsole.sh
+%attr(0755, -, -) %{_sysconfdir}/bacula/conf.d/template.sh
 
 
 

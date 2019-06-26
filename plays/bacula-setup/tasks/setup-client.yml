@@ -4,7 +4,7 @@
 - name: Template configuration
   template:
     src: "{{ bacula_client_template }}"
-    dest: "{{ bacula_dir }}/conf.d/servers/{{ slot | default('1') }}/{{ name }}.conf"
+    dest: "{{ bacula_server_slot_base }}/{{ slot | default('1') }}/{{ name }}.conf"
     force: "{{ force | default('no') }}"
   register: templatechk
   notify:

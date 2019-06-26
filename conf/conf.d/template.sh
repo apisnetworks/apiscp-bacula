@@ -2,18 +2,19 @@
 set -euo pipefail
 shopt -s nullglob
 
-DIR="$(dirname "$0")/servers"
-[[ -f /etc/bacula/conf.d/extra.sh ]] && . /etc/bacula/conf.d/extra.sh
+CNFDIR="/etc/bacula/local.d"
+[[ -f /etc/bacula/local.d/extra.sh ]] && . /etc/bacula/local.d/extra.sh
+
 . "$(dirname "$0")/../helpers.sh"
 EXTRA="${EXTRA:-}"
-TEMPLATE=$(grep -v '^[[:space:]]*#' "$DIR/base.conf")
+TEMPLATE=$(grep -v '^[[:space:]]*#' "$(flexible_check servers/base.conf)")
 # shellcheck disable=SC2012
-COUNT="$(ls -1d "$DIR"/[0-9]*/ | wc -l)"
+COUNT="$(ls -1d "$CNFDIR"/[0-9]*/ | wc -l)"
 env_fill "$(dirname "$0")/database.conf"
 
-find "$DIR" -mindepth 1 -type d | while read -r n ; do
+find "$CNFDIR" -mindepth 1 -type d | while read -r n ; do
 		SLOT=$(basename "$n")
-		perl -n -pe 's!%N%!'"$SLOT"'!g;' "$DIR/slot-base.conf" | env_fill -
+		perl -n -pe 's!%N%!'"$SLOT"'!g;' "$(flexible_check servers/slot-base.conf)" | env_fill -
 		for f in "$n"/* ; do
 				awk -v N="$SLOT" -v EXTRA="$EXTRA" -v TEMPLATE="$TEMPLATE" \
 						'BEGIN {
