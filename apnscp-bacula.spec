@@ -103,5 +103,5 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-#* Thu Jun 13 2019 Matt Saladna <matt@apisnetworks.com> - 1.0-1.apnscp
+#* Wed Jun 26 2019 Matt Saladna <matt@apisnetworks.com> - 1.0-1.apnscp
 #- Initial release

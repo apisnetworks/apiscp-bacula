@@ -19,7 +19,7 @@ bacula_credentials:
   db_user: "{{ lookup('pipe', 'grep DB_USER ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default('bacula', true) | trim }}"
   db_password: "{{ lookup('pipe', 'grep DB_PASSWORD ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default(lookup('password', '/dev/null chars=ascii_letters length=24'), true) | trim }}"
   # storage daemon
-  sd_hostname: "{{ lookup('pipe', 'grep SD_HOSTNAME ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default('localhost', true) | trim }}"
+  sd_hostname: "{{ lookup('pipe', 'grep SD_HOSTNAME ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default(ansible_default_ipv4.address, true) | trim }}"
   sd_password: "{{ lookup('pipe', 'grep SD_PASSWORD ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default(lookup('password', '/dev/null chars=ascii_letters length=24'), true) | trim }}"
   monitor_password: "{{ lookup('pipe', 'grep MONITOR_PASSWORD ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default(lookup('password', '/dev/null chars=ascii_letters length=24'), true) | trim }}"
   dir_password: "{{ lookup('pipe', 'grep DIR_PASSWORD ' + (bacula_custom_config | quote) + ' | cut -d= -f2') | default(lookup('password', '/dev/null chars=ascii_letters length=24'), true) | trim }}"
