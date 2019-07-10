@@ -4,7 +4,7 @@ This distribution allows for 2 simultaneous backup tasks. Servers are filed unde
 
 Bacula requires 1 server designated as the **Director** (bacula-dir), which initiates backups and stores data on the **Storage Daemon** (bacula-sd); this path is /home/bacula. The Director/Storage Daemon does not have to run apnscp. Skip down to [Manual installation](#Manual-installation) for free-form configration.
 
-Each server that is to be backed up must run a **File Daemon** (bacula-fd), also referred to as a *client*. A unique password should be generated for each client and stored in *s/etc/bacula/local.d/servers/n/server-name.conf* on the Director. Firewall permissions must be extended to permit access by the director.
+Each server that is to be backed up must run a **File Daemon** (bacula-fd), also referred to as a *client*. A unique password should be generated for each client and stored in */etc/bacula/local.d/servers/n/server-name.conf* on the Director. Firewall permissions must be extended to permit access by the director.
 
 Backups can be of two types,
 

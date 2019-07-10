@@ -4,7 +4,7 @@
 Summary: apnscp Bacula plugin
 Name: apnscp-bacula
 Version: 1.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 URL: https://github.com/apisnetworks/apnscp-bacula
 Vendor: Apis Networks
 License: MIT
@@ -103,5 +103,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-#* Wed Jun 26 2019 Matt Saladna <matt@apisnetworks.com> - 1.0-1.apnscp
-#- Initial release
+* Wed Jul 10 2019 Matt Saladna <matt@apisnetworks.com> - 1.0-2.apnscp
+- Ignore /home/bacula from Server profile
+- Default FileSet Client-Layer
+
+* Wed Jun 26 2019 Matt Saladna <matt@apisnetworks.com> - 1.0-1.apnscp
+- Initial release
