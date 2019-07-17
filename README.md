@@ -124,14 +124,13 @@ For each server, install bacula-client, set a password, whitelist the client on 
 ```bash
 # On client, "server-1"
 yum install -y bacula-client
-cd /etc/bacula
 # Whitelist Director's IP
 cpcmd rampart:whitelist 43.2.1.5
 # Generate a random password, record it
 # Sample password: foo/bar+baz
 openssl rand -base64 32
 # Set password for director
-nano /etc/bacula-fd.conf
+nano /etc/bacula/bacula-fd.conf
 # Change Password = "@@FD_PASSWORD@@" in the first Director { ... }
 # Password = "foo/bar+baz"
 systemctl enable bacula-fd
