@@ -228,7 +228,7 @@ systemctl enable bacula-sd bacula-dir bacula-fd
 
 ### File Daemon manual installation
 
-For each device, whitelist the Director IP address in the firewall using firewall-cmd.
+On the File Daemon server, whitelist the ip of every bacula client using firewall-cmd.
 ```bash
-firewall-cmd --permanent --zone=public --add-source=43.2.1.5
+firewall-cmd --permanent --zone=public --add-source=61.2.12.11
 ```
