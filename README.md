@@ -191,7 +191,7 @@ Create a database to store backup metadata,
 
 ```bash
 # Create database + grants
-echo "CREATE DATABASE bacula; CREATE USER bacula@localhost IDENTIFIED BY 'somepassword';" | mysql
+echo "CREATE DATABASE bacula; CREATE USER bacula@localhost IDENTIFIED BY 'somepassword';GRANT ALL PRIVILEGES ON bacula.* TO 'bacula'@'localhost';" | mysql
 # Populate database
 env db_name=bacula /usr/libexec/bacula/make_bacula_tables mysql
 ```
