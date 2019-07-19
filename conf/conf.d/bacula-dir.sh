@@ -12,7 +12,7 @@ set +o allexport
 
 . "$(dirname "$0")/../helpers.sh"
 
-env_fill "$DIR/director.conf"
+env_fill "$(flexible_check director.conf)"
 
 EXTRA="${EXTRA:-}"
 TEMPLATE=$(grep -v '^[[:space:]]*#' "$(flexible_check servers/base.conf)")

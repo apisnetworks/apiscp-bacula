@@ -12,7 +12,7 @@ set +o allexport
 
 . "${DIR}/../helpers.sh"
 
-env_fill "${DIR}/sd-director.conf"
+env_fill "$(flexible_check sd-director.conf)"
 
 find "$CNFDIR" -mindepth 1 -type d | while read -r n ; do
 		SLOT=$(basename "$n")
