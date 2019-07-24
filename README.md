@@ -24,7 +24,7 @@ Installation is broken down into Director/Storage Daemon and File Daemon. The RP
 Install the dependencies and official RPM from apnscp's Yum repository.
 
 ```
-yum install -y bacula-console apnscp-bacula
+yum install -y apnscp-bacula
 ```
 
 Storage Daemon, Director, and File Daemon will automatically be configured upon installation. Changes may be made to `/etc/sysconfig/bacula-vars`. Note that **SD_HOSTNAME** will default to the machine's IPv4 address. This address is sent to the backup client to inform it to connect to the Storage Daemon at this address.

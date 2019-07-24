@@ -4,7 +4,7 @@
 Summary: apnscp Bacula plugin
 Name: apnscp-bacula
 Version: 1.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 URL: https://github.com/apisnetworks/apnscp-bacula
 Vendor: Apis Networks
 License: MIT
@@ -13,6 +13,8 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: bacula-director
 Requires: bacula-storage
 Requires: bacula-client
+Requires: bacula-console
+Requires: mailx
 BuildArch: noarch
 
 %description
@@ -103,6 +105,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 24 2019 Matt Saladna <matt@apisnetworks.com> - 1.0-3.apnscp
+- Switch bsmtp with mailx, add deps
+
 * Wed Jul 10 2019 Matt Saladna <matt@apisnetworks.com> - 1.0-2.apnscp
 - Ignore /home/bacula from Server profile
 - Default FileSet Client-Layer
