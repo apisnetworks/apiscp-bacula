@@ -143,14 +143,20 @@ The client's configured. Now return to the Director to add the client profile,
 cd /etc/bacula/local.d/servers/
 cp 1/self.conf 2/server-1.conf
 nano 2/server-1.conf
-# Edit Name = self, Password = "XYZ", Address = "127.0.0.1"
-# New configuration should look like
-# Client {
-#        Name = server-1
-#        Password = "foo/bar+baz"
-#        Address = "43.2.1.5"
-#        FileSet = "Client-Layer"
-# }
+```
+
+Update Name, Password, and Address with information of the client you wish to backup. Example:
+
+```bash
+Client {
+        Name = server-1
+        Password = "foo/bar+baz"
+        Address = "61.2.12.11"
+        FileSet = "Client-Layer"
+ }
+```
+
+```bash
 systemctl restart bacula-dir
 ```
 
@@ -167,6 +173,11 @@ Clone repository and install supplemental RPMs.
 ```bash
 git clone https://github.com/apisnetworks/apnscp-bacula
 yum install -y bacula-director bacula-client bacula-storage bacula-console
+cp -a apnscp-bacula/conf/* /etc/bacula/
+cd /etc/bacula/
+ln -s bconsole-apnscp.conf bconsole.conf
+ln -s bacula-sd-apnscp.conf bacula-sd.conf
+ln -s bacula-dir-apnscp.conf bacula-dir.conf
 systemctl enable bacula-sd bacula-dir
 ```
 
@@ -180,7 +191,7 @@ Create a database to store backup metadata,
 
 ```bash
 # Create database + grants
-echo "CREATE DATABASE bacula; CREATE USER bacula@localhost IDENTIFIED BY 'somepassword';" | mysql
+echo "CREATE DATABASE bacula; CREATE USER bacula@localhost IDENTIFIED BY 'somepassword';GRANT ALL PRIVILEGES ON bacula.* TO 'bacula'@'localhost';" | mysql
 # Populate database
 env db_name=bacula /usr/libexec/bacula/make_bacula_tables mysql
 ```
@@ -217,7 +228,7 @@ systemctl enable bacula-sd bacula-dir bacula-fd
 
 ### File Daemon manual installation
 
-For each device whitelist firewall using firewall-cmd.
+On the File Daemon server, whitelist the ip of every bacula client using firewall-cmd.
 ```bash
-firewall-cmd --permanent --zone=public --add-source=192.168.100.1
+firewall-cmd --permanent --zone=public --add-source=61.2.12.11
 ```
