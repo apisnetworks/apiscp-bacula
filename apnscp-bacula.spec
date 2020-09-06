@@ -4,7 +4,7 @@
 Summary: apnscp Bacula plugin
 Name: apnscp-bacula
 Version: 1.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 URL: https://github.com/apisnetworks/apnscp-bacula
 Vendor: Apis Networks
 License: MIT
@@ -101,10 +101,13 @@ rm -rf $RPM_BUILD_ROOT
 %attr(0755, -, -) %{_sysconfdir}/bacula/conf.d/bacula-sd.sh
 %attr(0755, -, -) %{_sysconfdir}/bacula/conf.d/bconsole.sh
 %attr(0755, -, -) %{_sysconfdir}/bacula/conf.d/template.sh
-
+%ghost %{_sysconfdir}/my.cnf.d/bacula.conf
 
 
 %changelog
+* Sun Sep 06 2020 Matt Saladna <matt@apisnetworks.com> - 1.0-4.apnscp
+- Reset max_join_size to system default
+
 * Wed Jul 24 2019 Matt Saladna <matt@apisnetworks.com> - 1.0-3.apnscp
 - Switch bsmtp with mailx, add deps
 

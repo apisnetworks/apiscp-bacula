@@ -37,6 +37,17 @@
     host: "{{ bacula_credentials.db_hostname}}"
     priv: "{{ bacula_credentials.db_name }}.*:ALL"
   when: bacula_driver == 'mysql'
+  # ApisCP limits max_join_size to 5M records to thwart monopolization from bad queries.
+  # Bacula can easily grow beyond this in normal operation.
+- name: Bump max_join_size
+  ini_file:
+    path: /etc/my.cnf.d/bacula.cnf
+    section: mysqld
+    option: "max_join_size"
+    value: "{{ 2**64-1 }}"
+  notify: Restart mariadb
+  when: bacula_driver == 'mysql'
+
 - name: Create PostgreSQL user
   postgresql_user:
     name: "{{ bacula_credentials.db_user }}"
