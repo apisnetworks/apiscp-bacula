@@ -4,7 +4,7 @@
 Summary: apnscp Bacula plugin
 Name: apnscp-bacula
 Version: 1.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 URL: https://github.com/apisnetworks/apnscp-bacula
 Vendor: Apis Networks
 License: MIT
@@ -105,6 +105,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Dec 20 2020 Matt Saladna <matt@apisnetworks.com> - 1.0-6.apnscp
+- Raise concurrent director jobs to 4
+- Set maximal Full pool retention to ensure jobs are proprerly expired from catalog
+
 * Thu Sep 10 2020 Matt Saladna <matt@apisnetworks.com> - 1.0-5.apnscp
 - Regex error
 
