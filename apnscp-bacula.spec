@@ -4,7 +4,7 @@
 Summary: apnscp Bacula plugin
 Name: apnscp-bacula
 Version: 1.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 URL: https://github.com/apisnetworks/apnscp-bacula
 Vendor: Apis Networks
 License: MIT
@@ -71,6 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %dir %{apnscp_root}/resources/playbooks/addins/bacula-setup
 %{apnscp_root}/resources/playbooks/addins/bacula-setup/defaults/main.yml
+%{apnscp_root}/resources/playbooks/addins/bacula-setup/files/mysql-tables
 %{apnscp_root}/resources/playbooks/addins/bacula-setup/handlers/main.yml
 %{apnscp_root}/resources/playbooks/addins/bacula-setup/tasks/main.yml
 %{apnscp_root}/resources/playbooks/addins/bacula-setup/tasks/setup-db.yml
@@ -105,6 +106,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sun Jan 03 2021 Matt Saladna <matt@apisnetworks.com> - 1.0-7.apnscp
+- MariaDB 10.5 compatibility
+
 * Sun Dec 20 2020 Matt Saladna <matt@apisnetworks.com> - 1.0-6.apnscp
 - Raise concurrent director jobs to 4
 - Set maximal Full pool retention to ensure jobs are proprerly expired from catalog

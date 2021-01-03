@@ -57,7 +57,11 @@
   become: yes
   become_user: postgres
   when: bacula_driver == 'postgresql'
-
+- name: Update Bacula creation schema
+  copy:
+    src: files/mysql-tables
+    dest: /usr/libexec/bacula/make_mysql_tables
+  when: bacula_driver == 'mysql' and mariadb_version is version('10.5', '>=')
 - name: Populate schema
   command: "/usr/libexec/bacula/make_bacula_tables {{ bacula_driver }}"
   environment:
