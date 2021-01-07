@@ -4,7 +4,7 @@
 Summary: apnscp Bacula plugin
 Name: apnscp-bacula
 Version: 1.0
-Release: 7%{?dist}
+Release: 8%{?dist}
 URL: https://github.com/apisnetworks/apnscp-bacula
 Vendor: Apis Networks
 License: MIT
@@ -106,6 +106,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Thu Jan 07 2021 Matt Saladna <matt@apisnetworks.com> - 1.0-8.apnscp
+- Additional backup locations
+
 * Sun Jan 03 2021 Matt Saladna <matt@apisnetworks.com> - 1.0-7.apnscp
 - MariaDB 10.5 compatibility
 
