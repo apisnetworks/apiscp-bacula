@@ -1,7 +1,7 @@
 # env expansion in Bacula 9.x
 env_fill() {
 	local FILE=$1
-	perl -pe 's!\$\{([^}]*)}!$ENV{$1}!g;' "$FILE"
+	LC_ALL=en_US.UTF-8 PERL_BADLANG=0 perl -pe 's!\$\{([^}]*)}!$ENV{$1}!g;' "$FILE"
 }
 
 # Pull local.d or conf.d
